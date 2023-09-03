@@ -1,23 +1,14 @@
-import { WorkIcon } from "@assets/index"
 import Section from "../layout/Section"
 import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component"
 import "react-vertical-timeline-component/style.min.css"
-import resolveConfig from "tailwindcss/resolveConfig"
-import tailwindConfig from "../../tailwind.config.js"
 import { useDarkTheme } from "@context/DarkTheme"
 import { experiences } from "@constants/index.js"
-import { hexToRGB } from "@utils/colorHelper.js"
-
-interface TLElementProps {
-  date: string
-  title: string
-  entreprise: string
-  location: string
-  description: string
-  iconPath: string
-  textColor: string
-  bgColor: string
-}
+import { hexToRGB } from "@utils/colorHelper.ts"
+import { theme } from "@constants/theme"
+import { useWindowsSize } from "hooks"
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import Title from "./Title"
 
 function Icon({ image }: { image: string }) {
   return (
@@ -27,65 +18,57 @@ function Icon({ image }: { image: string }) {
   )
 }
 
-function TLElement({
-  date,
-  title,
-  entreprise,
-  location,
-  description,
-  iconPath,
-  textColor,
-  bgColor,
-}: TLElementProps) {
-  return (
-    <VerticalTimelineElement
-      className="vertical-timeline-element--work"
-      contentStyle={{
-        background: hexToRGB(bgColor, 0.6),
-        color: textColor,
-        padding: "10px 15px",
-        backdropFilter: "blur(10px)",
-      }}
-      contentArrowStyle={{ borderRight: `7px solid  ${hexToRGB(bgColor, 0.6)}` }}
-      date={date}
-      dateClassName="text-dark dark:text-light font-bold"
-      iconStyle={{ background: "white" }}
-      icon={<Icon image={iconPath} />}
-    >
-      <h3 className="">{title}</h3>
-      <h3 className="vertical-timeline-element-title">{entreprise}</h3>
-      <h4 className="vertical-timeline-element-subtitle">{location}</h4>
-      <p className="italic text-[8px]">{description}</p>
-    </VerticalTimelineElement>
-  )
-}
-
 export default function Experiences() {
-  const colors = resolveConfig(tailwindConfig).theme.colors
   const { dark } = useDarkTheme()
-  const bgColor = dark ? colors.light : colors.dark
-  const textColor = dark ? colors.dark : colors.light
+  const color1 = dark ? theme.colors.light : theme.colors.dark
+  const color2 = dark ? theme.colors.dark : theme.colors.light
+  const bgColorOpacity = hexToRGB(color1, 0.6)
+  const { width } = useWindowsSize()
+  const [layout, setLayout] = useState<"1-column" | "2-columns">("1-column")
+
+  useEffect(() => {
+    if (width < parseInt(theme.screens.lg)) setLayout("1-column")
+    else setLayout("2-columns")
+  }, [width])
+
   return (
     <Section id="experiences">
-      <div className="flex flex-col items-center gap-10 h-screen w-screen overflow-hidden">
-        <div className="flex flex-col">
-          <h1 className="text-dark text-[35px] italic dark:text-light">Professional Experiences</h1>
-          <div className="bg-gradient-to-r from-pink-500 to-yellow-500 h-[4px] rounded" />
-        </div>
-        <div className="relative overflow-scroll w-full h-4/6 bg-blob bg-content bg-no-repeat bg-center my-5">
-          <div className="sticky top-0 w-full h-[50px] bg-gradient-to-b from-light dark:from-dark to-transparent z-10" />
-          <VerticalTimeline lineColor={dark ? colors.light : colors.dark}>
-            {experiences.map((experience) => (
-              <TLElement
-                {...experience}
-                textColor={textColor}
-                bgColor={bgColor}
-                key={experience.title}
-              />
+      <div className="flex flex-col items-center gap-10 w-screen overflow-hidden mx-5 ">
+        <Title>Professional Experiences</Title>
+        <motion.div
+          initial={{ opacity: 0, y: 500 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+          viewport={{ once: true }}
+          className="relative overflow-scroll bg-blob bg-content bg-no-repeat bg-center mx-3 mb-[200px]"
+        >
+          <div className="absolute top-0 w-full h-[30px] bg-gradient-to-b from-light dark:from-dark to-transparent z-10" />
+          <VerticalTimeline lineColor={color1} layout={layout}>
+            {experiences.map(({ date, iconPath, title, entreprise, location, description }) => (
+              <VerticalTimelineElement
+                className="vertical-timeline-element--work "
+                contentStyle={{
+                  background: bgColorOpacity,
+                  color: color2,
+                  padding: "10px 15px",
+                  backdropFilter: "blur(10px)",
+                  maxWidth: layout === "1-column" ? "450px" : "none",
+                }}
+                contentArrowStyle={{ borderRight: `7px solid  ${bgColorOpacity}` }}
+                date={date}
+                dateClassName="text-dark dark:text-light font-bold"
+                iconStyle={{ background: "white" }}
+                icon={<Icon image={iconPath} />}
+              >
+                <h3 className="">{title}</h3>
+                <h3 className="vertical-timeline-element-title">{entreprise}</h3>
+                <h4 className="vertical-timeline-element-subtitle">{location}</h4>
+                <p className="italic text-[8px]">{description}</p>
+              </VerticalTimelineElement>
             ))}
           </VerticalTimeline>
-          <div className="sticky bottom-0 w-full h-[50px] bg-gradient-to-t from-light dark:from-dark to-transparent z-10" />
-        </div>
+          <div className="absolute bottom-0 w-full h-[30px] bg-gradient-to-t from-light dark:from-dark to-transparent z-10" />
+        </motion.div>
       </div>
     </Section>
   )

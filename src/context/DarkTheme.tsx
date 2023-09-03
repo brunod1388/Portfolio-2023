@@ -7,7 +7,7 @@ type ColorModeContextType = {
 
 const darkTheme = createContext({} as ColorModeContextType)
 
-export const DarkThemeProvider = ({ children }: PropsWithChildren<{}>) => {
+export const DarkThemeProvider = ({ children }: PropsWithChildren) => {
   const [dark, setDark] = useState<boolean>(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   )

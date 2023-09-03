@@ -13,7 +13,9 @@ function App() {
         <Navbar />
         <Hero />
         {navlinks.map((link) => (
-          <Section id={link.id}>{link.element}</Section>
+          <Section id={link.id} key={link.id}>
+            {link.element}
+          </Section>
         ))}
       </main>
     </BrowserRouter>

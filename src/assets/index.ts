@@ -10,6 +10,7 @@ import DivingIcon from "./icons/diving.png"
 import MountainIcon from "./icons/montagne.png"
 import DecoIcon from "./icons/decoration.png"
 import QualityIcon from "./icons/medaille.png"
+import GitIcon from "./icons/github.png"
 
 import LogoLight from "./logo/logo-light.png"
 import LogoDark from "./logo/logo-dark.png"
@@ -44,4 +45,5 @@ export {
   WireframeImage,
   TransImage,
   ChatImage,
+  GitIcon,
 }

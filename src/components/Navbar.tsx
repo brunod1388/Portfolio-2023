@@ -3,13 +3,8 @@ import { useState } from "react"
 import { Menu as MenuIcon, Close, Moon, Sun, LogoDark, LogoLight } from "../assets"
 import { useDarkTheme } from "@context/DarkTheme"
 
-type MenuProps = {
-  mobile?: boolean
-  setToggle?: React.Dispatch<React.SetStateAction<Boolean>>
-}
-
 export default function Navbar() {
-  const [toggle, setToggle] = useState<Boolean>(false)
+  const [toggle, setToggle] = useState<boolean>(false)
   const { dark, setDark } = useDarkTheme()
 
   function setDarkMode(mode: "dark" | "light") {
@@ -18,31 +13,9 @@ export default function Navbar() {
     else document.getElementsByTagName("main")[0].classList.remove("dark")
   }
 
-  function Menu({ mobile, setToggle = () => {} }: MenuProps) {
-    return (
-      <ul
-        className={`${
-          mobile ? "md:hidden flex flex-col" : "hidden md:flex flex-row"
-        } gap-3 items-center`}
-      >
-        {navlinks.map((link) => (
-          <li
-            id={`${mobile ? "m-" : ""}link.id`}
-            className={`text-[18px] hover:text-sky-300 hover:drop-shadow-dark dark:hover:drop-shadow-light`}
-            onClick={() => {
-              if (mobile) setToggle(!toggle)
-            }}
-          >
-            <a href={`#${link.id}`}>{link.title}</a>
-          </li>
-        ))}
-      </ul>
-    )
-  }
-
   return (
     <nav
-      className={`min-w-[375px] px-4 pt-2 pb-12 flex flex-col fixed w-full top-0 z-20 bg-gradient-to-b from-slate-200 dark:from-slate-800 from-25%`}
+      className={`min-w-[375px] px-4 pt-2 pb-12 flex flex-col fixed w-full top-0 z-20 bg-gradient-to-b from-light dark:from-dark from-50%`}
     >
       <div className="text-dark dark:text-light flex flex-row justify-between w-full">
         <div
@@ -53,17 +26,16 @@ export default function Navbar() {
           <p className="text-[16px] md:text-[24px]">Bruno | Developer Junior</p>
         </div>
         <div className="flex items-center">
-          <Menu />
-          {/* <ul className="hidden md:flex flex-row gap-3 items-center">
+          <ul className="hidden md:flex flex-row gap-3 items-center">
             {navlinks.map((link) => (
               <li
-                id={`${link.id}`}
+                key={link.id}
                 className={`text-[18px] hover:text-sky-300 hover:drop-shadow-dark dark:hover:drop-shadow-light`}
               >
                 <a href={`#${link.id}`}>{link.title}</a>
               </li>
             ))}
-          </ul> */}
+          </ul>
           <div className="rounded-full bg-dark dark:bg-light mx-3 p-1">
             <img
               src={dark ? Sun : Moon}
@@ -80,12 +52,11 @@ export default function Navbar() {
           />
         </div>
       </div>
-      {toggle && <Menu mobile setToggle={setToggle} />}
-      {/* {toggle && (
+      {toggle && (
         <ul className="md:hidden flex flex-col gap-3 items-center">
           {navlinks.map((link) => (
             <li
-              id={`m-${link.id}`}
+              key={`m-${link.id}`}
               className={`text-[18px] hover:text-sky-300 hover:drop-shadow-dark dark:hover:drop-shadow-light`}
               onClick={() => setToggle(!toggle)}
             >
@@ -93,7 +64,7 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-      )} */}
+      )}
     </nav>
   )
 }
